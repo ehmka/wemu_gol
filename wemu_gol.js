@@ -2,7 +2,8 @@ var wemu_gol = function () {
     var jsonCircles = [
         { "x": 1, "y": 1 },
         { "x": 1, "y": 2 },
-        { "x": 3, "y": 1 }
+        { "x": 3, "y": 1 },
+        { "x": 2, "y": 0 }
     ];
 
     var theWidth = 400;
