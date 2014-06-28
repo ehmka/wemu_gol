@@ -6,12 +6,15 @@ var wemu_gol = function () {
 
     var the_field = null;
 
-    function init() {
-        field = [
-            [0, 0, 0],
-            [0, 1, 0],
-            [1, 0, 1]
-        ];
+    function init(ySize, xSize) {
+        field = [];
+        for (y = 0; y < ySize; y++) {
+            field.push([]);
+            for (x = 0; x < xSize; x++) {
+               field[y].push(Math.random()<=0.3);
+            }
+        }
+
         return field;
     }
 
@@ -28,16 +31,44 @@ var wemu_gol = function () {
         return display_data;
     }
 
+    function neigbours(field, y, x) {
+        var counter = 0;
+        counter = fieldVal(field, y - 1, x - 1);
+        counter += fieldVal(field, y - 1, x);
+        counter += fieldVal(field, y - 1, x + 1);
+        counter += fieldVal(field, y, x - 1);
+        counter += fieldVal(field, y, x + 1);
+        counter += fieldVal(field, y + 1, x - 1);
+        counter += fieldVal(field, y + 1, x);
+        counter += fieldVal(field, y + 1, x + 1);
+
+        return counter;
+    }
+
+    function fieldVal(field, y, x) {
+        if (y < 0 || y >= field.length || x < 0 || x > field[0].length) {
+            return 0;
+        }
+        return field[y][x] ? 1 : 0;
+
+    }
+
     function nextGeneration(field) {
         var result = [];
         for (y = 0; y < field.length; y++) {
             result.push([]);
             for (x = 0; x < field[0].length; x++) {
                 result[y].push(field[y][x]);
+                var neigbourss = neigbours(field, y, x);
+
                 if (field[y][x]) {
-                    result[y][x] = false;
+                    if (neigbourss < 2 || neigbours > 3) {
+                        result[y][x] = false;
+                    }
                 } else {
-                    result[y][x] = true;
+                    if (neigbourss === 3) {
+                        result[y][x] = true;
+                    }
                 }
             }
         }
@@ -46,7 +77,7 @@ var wemu_gol = function () {
 
     function next() {
         if (the_field === null) {
-            the_field = init();
+            the_field = init(4, 4);
         } else {
             the_field = nextGeneration(the_field);
         }
@@ -56,12 +87,14 @@ var wemu_gol = function () {
 
     return {
         draw: function () {
+            var myLocalField = next();
+
             var x_scale = d3.scale.linear()
-                .domain([0, 4])
+                .domain([0, myLocalField[0].length])
                 .range([0, theWidth]);
 
             var y_scale = d3.scale.linear()
-                .domain([0, 4])
+                .domain([0, myLocalField.length])
                 .range([0, theHeight]);
 
 
@@ -72,7 +105,7 @@ var wemu_gol = function () {
                 .attr("height", theHeight);
 
             svgContainer.selectAll("rect")
-                .data(calculateDisplayData(next()))
+                .data(calculateDisplayData(myLocalField))
                 .enter()
                 .append("rect")
                 .attr("x", function (d) {
@@ -86,4 +119,6 @@ var wemu_gol = function () {
         }
     }
 
-}();
+}
+
+();
