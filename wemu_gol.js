@@ -75,7 +75,8 @@ var wemu_gol = function () {
 
     function next() {
         if (the_field === null) {
-            the_field = init(20, 20);
+            var message = parseInt(d3.select("#size")[0].value);
+            the_field = init(100, 100);
         } else {
             the_field = nextGeneration(the_field);
         }
@@ -83,7 +84,16 @@ var wemu_gol = function () {
         return the_field;
     }
 
+    var lastTimeout;
+
     return {
+        los: function () {
+            window.clearTimeout(lastTimeout);
+            lastTimeout = window.setInterval(function () {
+                wemu_gol.draw()
+            }, 1000)
+        },
+
         draw: function () {
             var myLocalField = next();
 
