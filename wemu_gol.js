@@ -1,34 +1,43 @@
 var wemu_gol = function () {
-    var field = [
-        {   "x": 100, "y": 100, "color": "red" },
-        {   "x": 200, "y": 200, "color": "red" }
+    var jsonCircles = [
+        { "x": 1, "y": 1 },
+        { "x": 1, "y": 2 },
+        { "x": 3, "y": 1 }
     ];
+
+    var theWidth = 400;
+    var theHeight = 400;
 
     return {
         draw: function () {
-            var jsonCircles = [
-                { "x": 1, "y": 1 },
-                { "x": 1, "y": 2 },
-                { "x": 3, "y": 1 }
-            ];
+
+            var x_scale = d3.scale.linear()
+                .domain([0, 4])
+                .range([0, theWidth]);
+
+            var y_scale = d3.scale.linear()
+                .domain([0,4])
+                .range([0, theHeight]);
+
+
             d3.select("svg").remove();
 
             var svgContainer = d3.select("#output").append("svg")
-                .attr("width", 400)
-                .attr("height", 400);
+                .attr("width", theWidth)
+                .attr("height", theHeight);
 
             svgContainer.selectAll("rect")
                 .data(jsonCircles)
                 .enter()
                 .append("rect")
                 .attr("x", function (d) {
-                    return d.x;
+                    return x_scale(d.x);
                 })
                 .attr("y", function (d) {
-                    return d.y;
+                    return y_scale(d.y);
                 })
-                .attr("width", 1)
-                .attr("height", 1);
+                .attr("width", x_scale(1))
+                .attr("height", y_scale(1));
         }
     }
 
