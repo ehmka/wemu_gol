@@ -11,7 +11,7 @@ var wemu_gol = function () {
         for (y = 0; y < ySize; y++) {
             field.push([]);
             for (x = 0; x < xSize; x++) {
-               field[y].push(Math.random()<=0.3);
+                field[y].push(Math.random() <= 0.5);
             }
         }
 
@@ -32,8 +32,7 @@ var wemu_gol = function () {
     }
 
     function neigbours(field, y, x) {
-        var counter = 0;
-        counter = fieldVal(field, y - 1, x - 1);
+        var counter = fieldVal(field, y - 1, x - 1);
         counter += fieldVal(field, y - 1, x);
         counter += fieldVal(field, y - 1, x + 1);
         counter += fieldVal(field, y, x - 1);
@@ -46,7 +45,7 @@ var wemu_gol = function () {
     }
 
     function fieldVal(field, y, x) {
-        if (y < 0 || y >= field.length || x < 0 || x > field[0].length) {
+        if (y < 0 || y >= field.length || x < 0 || x >= field[0].length) {
             return 0;
         }
         return field[y][x] ? 1 : 0;
@@ -60,9 +59,8 @@ var wemu_gol = function () {
             for (x = 0; x < field[0].length; x++) {
                 result[y].push(field[y][x]);
                 var neigbourss = neigbours(field, y, x);
-
                 if (field[y][x]) {
-                    if (neigbourss < 2 || neigbours > 3) {
+                    if (neigbourss < 2 || neigbourss > 3) {
                         result[y][x] = false;
                     }
                 } else {
@@ -77,7 +75,7 @@ var wemu_gol = function () {
 
     function next() {
         if (the_field === null) {
-            the_field = init(4, 4);
+            the_field = init(20, 20);
         } else {
             the_field = nextGeneration(the_field);
         }
